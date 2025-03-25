@@ -1,9 +1,18 @@
 import React, { useState } from "react";
-import { Input, Button, List, Avatar, Spin, Typography } from "antd";
+import {
+  Input,
+  Button,
+  List,
+  Avatar,
+  Spin,
+  Typography,
+  Card,
+  Space,
+} from "antd";
 import { SendOutlined, RobotOutlined, UserOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
-const { Paragraph } = Typography;
+const { Paragraph, Title } = Typography;
 
 const ChatSection = () => {
   const [messages, setMessages] = useState([
@@ -66,87 +75,92 @@ const ChatSection = () => {
   };
 
   return (
-    <div
-      className="chat-container"
-      style={{ display: "flex", flexDirection: "column", height: "500px" }}
+    <Card
+      bordered={false}
+      style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}
     >
-      <Paragraph>
-        Ask Agent X about market trends, campaign performance, consumer
-        sentiment, or any other brand management insights.
-      </Paragraph>
+      <Space direction="vertical" size="large" style={{ width: "100%" }}>
+        <Title level={4}>Chat with Agent X</Title>
+        <Paragraph>
+          Ask Agent X about market trends, campaign performance, consumer
+          sentiment, or any other brand management insights.
+        </Paragraph>
 
-      <List
-        className="chat-list"
-        style={{
-          overflow: "auto",
-          flex: 1,
-          marginBottom: "16px",
-          border: "1px solid #f0f0f0",
-          borderRadius: "4px",
-          padding: "8px",
-        }}
-        itemLayout="horizontal"
-        dataSource={messages}
-        renderItem={(message) => (
-          <List.Item
-            style={{
-              justifyContent:
-                message.type === "user" ? "flex-end" : "flex-start",
-            }}
-          >
-            <List.Item.Meta
-              avatar={
-                message.type === "user" ? (
-                  <Avatar
-                    icon={<UserOutlined />}
-                    style={{ backgroundColor: "#1890ff" }}
-                  />
-                ) : (
-                  <Avatar
-                    icon={<RobotOutlined />}
-                    style={{ backgroundColor: "#52c41a" }}
-                  />
-                )
-              }
-              title={message.type === "user" ? "You" : "Agent X"}
-              description={
-                <div style={{ whiteSpace: "pre-wrap" }}>{message.content}</div>
-              }
+        <List
+          className="chat-list"
+          style={{
+            overflow: "auto",
+            flex: 1,
+            maxHeight: "300px",
+            border: "1px solid #f0f0f0",
+            borderRadius: "4px",
+            padding: "8px",
+          }}
+          itemLayout="horizontal"
+          dataSource={messages}
+          renderItem={(message) => (
+            <List.Item
               style={{
-                maxWidth: "80%",
-                padding: "8px",
-                backgroundColor:
-                  message.type === "user" ? "#e6f7ff" : "#f6ffed",
-                borderRadius: "8px",
+                justifyContent:
+                  message.type === "user" ? "flex-end" : "flex-start",
               }}
-            />
-          </List.Item>
-        )}
-      />
-
-      {loading && (
-        <Spin tip="Agent X is thinking..." style={{ marginBottom: "8px" }} />
-      )}
-
-      <div style={{ display: "flex" }}>
-        <TextArea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Type your message here..."
-          autoSize={{ minRows: 2, maxRows: 6 }}
-          style={{ marginRight: "8px" }}
+            >
+              <List.Item.Meta
+                avatar={
+                  message.type === "user" ? (
+                    <Avatar
+                      icon={<UserOutlined />}
+                      style={{ backgroundColor: "#1890ff" }}
+                    />
+                  ) : (
+                    <Avatar
+                      icon={<RobotOutlined />}
+                      style={{ backgroundColor: "#52c41a" }}
+                    />
+                  )
+                }
+                title={message.type === "user" ? "You" : "Agent X"}
+                description={
+                  <div style={{ whiteSpace: "pre-wrap" }}>
+                    {message.content}
+                  </div>
+                }
+                style={{
+                  maxWidth: "80%",
+                  padding: "8px",
+                  backgroundColor:
+                    message.type === "user" ? "#e6f7ff" : "#f6ffed",
+                  borderRadius: "8px",
+                }}
+              />
+            </List.Item>
+          )}
         />
-        <Button
-          type="primary"
-          icon={<SendOutlined />}
-          onClick={handleSend}
-          disabled={!input.trim() || loading}
-        >
-          Send
-        </Button>
-      </div>
-    </div>
+
+        {loading && (
+          <Spin tip="Agent X is thinking..." style={{ marginBottom: "8px" }} />
+        )}
+
+        <div style={{ display: "flex" }}>
+          <TextArea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type your message here..."
+            autoSize={{ minRows: 2, maxRows: 6 }}
+            style={{ marginRight: "8px" }}
+          />
+          <Button
+            type="primary"
+            icon={<SendOutlined />}
+            onClick={handleSend}
+            disabled={!input.trim() || loading}
+          >
+            Send
+          </Button>
+        </div>
+      </Space>
+    </Card>
   );
 };
 

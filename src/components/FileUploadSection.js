@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import { Upload, Button, message, Alert, Typography } from "antd";
+import { Upload, Button, message, Alert, Typography, Card, Space } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import apiService from "../services/api";
 
-const { Paragraph } = Typography;
+const { Paragraph, Title } = Typography;
 
 const FileUploadSection = () => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
-  console.log("🚀 ~ FileUploadSection ~ responseMessage:", responseMessage);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleUpload = async () => {
@@ -24,9 +23,8 @@ const FileUploadSection = () => {
 
       setFileList([]);
       setSuccess(true);
-      setResponseMessage(response.id);
-      message.success(response.message && response.id);
-      console.log("Upload response:", response);
+      setResponseMessage(response.message || "Upload successful!");
+      message.success(response.message || "Upload successful!");
     } catch (error) {
       console.error("Upload failed:", error);
       let errorMsg = "Upload failed.";
@@ -60,7 +58,6 @@ const FileUploadSection = () => {
       setSuccess(false);
     },
     beforeUpload: (file) => {
-      // Check if file is CSV
       const isCSV = file.type === "text/csv" || file.name.endsWith(".csv");
       if (!isCSV) {
         message.error("You can only upload CSV files!");
@@ -75,47 +72,50 @@ const FileUploadSection = () => {
   };
 
   return (
-    <div>
-      <Paragraph>
-        Upload your sales data as a CSV file to analyze trends, track
-        performance, and receive insights.
-      </Paragraph>
-      <Upload {...props}>
-        <Button icon={<UploadOutlined />}>Select CSV File</Button>
-      </Upload>
-      <Button
-        type="primary"
-        onClick={handleUpload}
-        disabled={fileList.length === 0}
-        loading={uploading}
-        style={{ marginTop: 16 }}
-      >
-        {uploading ? "Uploading" : "Start Upload"}
-      </Button>
+    <Card
+      bordered={false}
+      style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}
+    >
+      <Space direction="vertical" size="large" style={{ width: "100%" }}>
+        <Title level={4}>Upload Sales Data</Title>
+        <Paragraph>
+          Upload your sales data as a CSV file to analyze trends, track
+          performance, and receive insights.
+        </Paragraph>
+        <Upload {...props}>
+          <Button icon={<UploadOutlined />}>Select CSV File</Button>
+        </Upload>
+        <Button
+          type="primary"
+          onClick={handleUpload}
+          disabled={fileList.length === 0}
+          loading={uploading}
+        >
+          {uploading ? "Uploading" : "Start Upload"}
+        </Button>
 
-      {success && (
-        <Alert
-          message="Upload Successful! and Your ID ->"
-          description={
-            responseMessage ||
-            "Your sales data has been uploaded and is being processed. You can now use the chat to analyze your data."
-          }
-          type="success"
-          showIcon
-          style={{ marginTop: 16 }}
-        />
-      )}
+        {success && (
+          <Alert
+            message="Upload Successful!"
+            description={
+              responseMessage ||
+              "Your sales data has been uploaded and is being processed. You can now use the chat to analyze your data."
+            }
+            type="success"
+            showIcon
+          />
+        )}
 
-      {errorMessage && (
-        <Alert
-          message="Upload Failed"
-          description={errorMessage}
-          type="error"
-          showIcon
-          style={{ marginTop: 16 }}
-        />
-      )}
-    </div>
+        {errorMessage && (
+          <Alert
+            message="Upload Failed"
+            description={errorMessage}
+            type="error"
+            showIcon
+          />
+        )}
+      </Space>
+    </Card>
   );
 };
 
