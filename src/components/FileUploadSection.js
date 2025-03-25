@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Upload, Button, message, Alert, Typography } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import axios from "axios";
+import apiService from "../services/api";
 
 const { Paragraph } = Typography;
 
@@ -9,33 +9,42 @@ const FileUploadSection = () => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    fileList.forEach((file) => {
-      formData.append("file", file);
-    });
+    const file = fileList[0]; // Get the first file from the list
 
     setUploading(true);
+    setErrorMessage("");
 
     try {
-      const response = await axios.post(
-        "http://localhost:8070/api/agent/upload-sales-data",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await apiService.uploadSalesData(file);
 
       setFileList([]);
       setSuccess(true);
-      message.success("Upload successful!");
-      console.log("Upload response:", response.data);
+      setResponseMessage(response.message || "Upload successful!");
+      message.success(response.message || "Upload successful!");
+      console.log("Upload response:", response);
     } catch (error) {
       console.error("Upload failed:", error);
-      message.error("Upload failed.");
+      let errorMsg = "Upload failed.";
+
+      if (
+        error.name === "NetworkError" ||
+        error.message.includes("Network Error")
+      ) {
+        errorMsg =
+          "Network error: Cannot connect to server. CORS policy might be blocking the request.";
+      } else if (error.response) {
+        errorMsg = `Server error: ${error.response.status} ${
+          error.response.data.message || ""
+        }`;
+      }
+
+      setErrorMessage(errorMsg);
+      message.error(errorMsg);
+      setSuccess(false);
     } finally {
       setUploading(false);
     }
@@ -86,8 +95,21 @@ const FileUploadSection = () => {
       {success && (
         <Alert
           message="Upload Successful!"
-          description="Your sales data has been uploaded and is being processed. You can now use the chat to analyze your data."
+          description={
+            responseMessage ||
+            "Your sales data has been uploaded and is being processed. You can now use the chat to analyze your data."
+          }
           type="success"
+          showIcon
+          style={{ marginTop: 16 }}
+        />
+      )}
+
+      {errorMessage && (
+        <Alert
+          message="Upload Failed"
+          description={errorMessage}
+          type="error"
           showIcon
           style={{ marginTop: 16 }}
         />

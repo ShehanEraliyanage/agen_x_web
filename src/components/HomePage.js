@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Col, Card, Divider } from "antd";
-import FileUploadSection from "./FileUploadSection";
+import FileUploadSection from "./FileUploadSection.js";
 import ChatSection from "./ChatSection";
 
 const HomePage = () => {

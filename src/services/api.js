@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8070/api";
+const API_BASE_URL = "http://localhost:8070"; // Removed trailing slash to prevent double slash issues
 
 const apiService = {
   // Upload sales data
@@ -16,6 +16,7 @@ const apiService = {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          withCredentials: true, // Add this for CORS credentials support
         }
       );
       return response.data;
@@ -28,9 +29,15 @@ const apiService = {
   // Send message to Agent X
   sendMessage: async (message) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/agent/chat`, {
-        message,
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}/agent/chat`,
+        {
+          message,
+        },
+        {
+          withCredentials: true, // Add this for CORS credentials support
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error sending message:", error);
