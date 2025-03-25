@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+/* Additional styles for our application */
+.layout {
+  min-height: 100vh;
+}
+
+.site-layout-content {
+  background: #fff;
+  padding: 24px;
+  min-height: 280px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.home-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Chat styles */
+.chat-list .ant-list-item {
+  padding: 8px;
+}
