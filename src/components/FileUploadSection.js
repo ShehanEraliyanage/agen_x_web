@@ -10,10 +10,11 @@ const FileUploadSection = () => {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
+  console.log("🚀 ~ FileUploadSection ~ responseMessage:", responseMessage);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleUpload = async () => {
-    const file = fileList[0]; // Get the first file from the list
+    const file = fileList[0];
 
     setUploading(true);
     setErrorMessage("");
@@ -23,8 +24,8 @@ const FileUploadSection = () => {
 
       setFileList([]);
       setSuccess(true);
-      setResponseMessage(response.message || "Upload successful!");
-      message.success(response.message || "Upload successful!");
+      setResponseMessage(response.id);
+      message.success(response.message && response.id);
       console.log("Upload response:", response);
     } catch (error) {
       console.error("Upload failed:", error);
@@ -94,7 +95,7 @@ const FileUploadSection = () => {
 
       {success && (
         <Alert
-          message="Upload Successful!"
+          message="Upload Successful! and Your ID ->"
           description={
             responseMessage ||
             "Your sales data has been uploaded and is being processed. You can now use the chat to analyze your data."
